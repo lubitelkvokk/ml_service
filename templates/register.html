@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication</title>
+    <link href="{{ url_for('static', path='/login.css') }}" rel="stylesheet">
+</head>
+<body>
+<div class="auth-container">
+    <h1 class="auth-title">User Authentication</h1>
+    <form id="register_form" action="/authentication/register/" method="post" class="auth-form">
+        <label for="email" class="auth-label">Email:</label>
+        <input type="email" id="email" name="email" required class="auth-input">
+        <label for="login" class="auth-label">Login:</label>
+        <input type="text" id="login" name="login" required class="auth-input">
+        <label for="username" class="auth-label">Username:</label>
+        <input type="text" id="username" name="username" required class="auth-input">
+        <label for="password" class="auth-label">Password:</label>
+        <input type="password" id="password" name="password" required class="auth-input">
+        <input type="submit" value="Register" class="auth-button">
+    </form>
+    <br>
+    <!-- Главная страница -->
+    <a class="auth-button" href="/main">Главная страница</a>
+</div>
+</body>
+</html>

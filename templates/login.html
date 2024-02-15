@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication</title>
+    <link href="{{ url_for('static', path='/login.css') }}" rel="stylesheet">
+</head>
+<body>
+<div class="auth-container">
+    <h1 class="auth-title">User Authentication</h1>
+    <form id="login_form" action="login" method="post" class="auth-form">
+        <label for="login" class="auth-label">Login:</label>
+        <input type="text" id="login" name="login" required class="auth-input">
+        <label for="username" class="auth-label">Username:</label>
+        <input type="text" id="username" name="username" required class="auth-input">
+        <label for="password" class="auth-label">Password:</label>
+        <input type="password" id="password" name="password" required class="auth-input">
+        <input type="submit" value="Login" class="auth-button">
+    </form>
+    <br>
+    <!--    TODO страница home -->
+    <a class="auth-button" href="/main"> Главная страница </a>
+</div>
+</body>
+<script>
+    const form = document.getElementById("login_form");
+
+
+    async function send(event) {
+        // event.preventDefault();
+
+        // получаем введеное в поле имя и возраст
+        const login = document.getElementById("login").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        localStorage.setItem("login", login)
+        localStorage.setItem("password", password)
+
+        // отправляем запрос
+        const response = await fetch("login", {
+            method: "POST",
+            headers: {"Accept": "application/json", "Content-Type": "application/json"},
+            body: JSON.stringify({
+                username: username,
+                password: password,
+                login: login
+            })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById("message").textContent = data.message;
+        } else {
+            console.log(response);
+        }
+
+    }
+
+    form.addEventListener('submit', send);
+</script>
+</html>
