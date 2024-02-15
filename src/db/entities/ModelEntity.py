@@ -1,9 +1,9 @@
-from src.init.db.db_init import Base
+from db_init import Base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 
 
 class DBModel(Base):
-    tablename = 'models'
+    __tablename__ = 'models'
     # table_args = {'extend_existing': True}
 
     model_id = Column(Integer, primary_key=True, autoincrement=True)
