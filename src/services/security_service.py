@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+from fastapi import Request
 from datetime import datetime, timedelta
 from typing import Annotated, Union
 
@@ -32,3 +32,31 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+
+def get_token_from_cookies(request: Request):
+    # Извлечение токена из cookies
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Access token is missing")
+    return token
+
+
+async def get_current_user(token: str = Depends(get_token_from_cookies)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        # because token starts with Baerer
+        payload = jwt.decode(token[7:], SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        # В вашем случае, вы можете возвращать полную информацию о пользователе,
+        # если у вас есть соответствующая функция для ее получения.
+        # Например, get_user(username) -> User
+        return username  # Или объект пользователя
+    except JWTError:
+        raise credentials_exception
