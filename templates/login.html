@@ -9,6 +9,9 @@
 <body>
 <div class="auth-container">
     <h1 class="auth-title">User Authentication</h1>
+    {% if error %}
+    <div class="error-message" style="color: red;">{{ error }}</div>
+    {% endif %}
     <form id="login_form" action="login" method="post" class="auth-form">
         <label for="login" class="auth-label">Login:</label>
         <input type="text" id="login" name="login" required class="auth-input">

@@ -9,6 +9,9 @@
 <body>
 <div class="auth-container">
     <h1 class="auth-title">User Authentication</h1>
+    {% if error %}
+    <div class="error-message" style="color: red;">{{ error }}</div>
+    {% endif %}
     <form id="register_form" action="/authentication/register/" method="post" class="auth-form">
         <label for="email" class="auth-label">Email:</label>
         <input type="email" id="email" name="email" required class="auth-input">

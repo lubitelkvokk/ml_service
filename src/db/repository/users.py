@@ -29,3 +29,12 @@ def create_new_user(user: UserCreate, db: Session):
     except IntegrityError as e:
         db.rollback()
         raise e
+
+
+def authenticate_user(login: str, password: str, db: Session):
+    user = db.query(DBUser).filter(DBUser.login == login).first()
+    if not user:
+        return False
+    if not pwd_context.verify(password, user.password_hash):
+        return False
+    return user

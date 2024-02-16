@@ -1,59 +1,34 @@
+from __future__ import annotations
+
+from datetime import datetime, timedelta
+from typing import Annotated, Union
+
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError, jwt
 from passlib.context import CryptContext
-from src.repositories.UserRepository import UserRepository
-from src.schemas.auth import UserCreate, SignInResponse, UserLogin
-from src.schemas.user import User
-from src.exceptions import UserExists, UserNotFoundError, InvalidPassword
-from src.core.security import security
-import datetime
+from pydantic import BaseModel
+
+SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-class SecurityService:
-    password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    user_repository = UserRepository()
-
-    async def create_user_payload(self, user_info):
-        return {
-            'user_id': user_info.id,
-            'username': user_info.username,
-            'email': user_info.email,
-            'dev': user_info.developer
-        }
-
-    async def create_sign_in_response(self, user_info):
-        payload = await self.create_user_payload(user_info)
-        access_token = security.create_access_token(payload, user_info.developer)
-        current_datetime = datetime.datetime.now().isoformat()
-        user = User(id=user_info.id, username=user_info.username, email=user_info.email, dev=user_info.developer)
-        return SignInResponse(access_token=access_token, expiration=current_datetime, user_info=user)
-
-    async def sign_up(self, user: UserCreate):
-        user_db_info = await self.user_repository.get_by_username(username=user.username)
-
-        if user_db_info is not None:
-            raise UserExists()
-
-        hashed_password = self.password_context.hash(user.password)
-        new_user = await self.user_repository.add({
-            "username": user.username,
-            "hashed_password": hashed_password,
-            "email": user.email,
-            'developer': user.dev
-        })
-
-        new_user = await self.user_repository.get_by_username(username=user.username)
-
-        return await self.create_sign_in_response(new_user)
-
-    async def sign_in(self, user: UserLogin):
-        user_db_info = await self.user_repository.get_by_username(username=user.username)
-
-        if user_db_info is None:
-            raise UserNotFoundError()
-
-        if not self.password_context.verify(user.password, user_db_info.hashed_password):
-            raise InvalidPassword()
-
-        return await self.create_sign_in_response(user_db_info)
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 
-security_service = SecurityService()
+class TokenData(BaseModel):
+    username: Union[str, None] = None
+
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt

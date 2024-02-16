@@ -1,11 +1,15 @@
+from datetime import timedelta
+
 from fastapi import APIRouter, Depends, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from src.db.session import get_db
 from src.db.schemas.users import UserCreate
-from src.db.repository.users import create_new_user
+from src.db.repository.users import create_new_user, authenticate_user
 from sqlalchemy.exc import IntegrityError
+
+from src.services.security_service import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
 router = APIRouter(prefix="/authentication", tags=["authentication"])
 templates = Jinja2Templates(directory="templates")
@@ -23,7 +27,7 @@ async def register(request: Request, username: str = Form(...), login: str = For
                       password=password)  # Используйте значение email из формы
     try:
         user = create_new_user(user=user, db=db)
-        return RedirectResponse("/main",
+        return RedirectResponse("/home",
                                 status_code=302)  # Перенаправление на главную страницу после успешной регистрации
     except IntegrityError:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Duplicate username or email"})
@@ -34,9 +38,22 @@ async def render_login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 
+from fastapi.responses import Response
+
 @router.post("/login")
-def login_user(request: Request, login: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    # Здесь должна быть логика проверки пользователя
-    # Если проверка прошла успешно:
-    return RedirectResponse("/main", status_code=302)  # Перенаправление на главную страницу
-    # В противном случае вернуть страницу входа с сообщением об ошибке
+async def login_user(request: Request, login: str = Form(...), password: str = Form(...),
+                     db: Session = Depends(get_db)):
+    user = authenticate_user(login, password, db)
+    if not user:
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid login or password"})
+    # Создание токена доступа для пользователя
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    # Создание ответа с перенаправлением
+    response = RedirectResponse("/home", status_code=302)
+    # Добавление токена в заголовки куки (или вы можете выбрать другой способ передачи токена)
+    response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True)
+    return response
+
