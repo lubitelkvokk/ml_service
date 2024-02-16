@@ -1,14 +1,14 @@
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, Request, Form
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy.orm import Session
-from src.db.session import get_db
-from src.db.schemas.users import UserCreate
-from src.db.repository.users import create_new_user, authenticate_user
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
+from src.db.repository.users import create_new_user, authenticate_user
+from src.db.schemas.users import UserCreate
+from src.db.session import get_db
 from src.services.security_service import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
 router = APIRouter(prefix="/authentication", tags=["authentication"])
@@ -37,8 +37,6 @@ async def register(request: Request, username: str = Form(...), login: str = For
 async def render_login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
-
-from fastapi.responses import Response
 
 @router.post("/login")
 async def login_user(request: Request, login: str = Form(...), password: str = Form(...),

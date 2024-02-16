@@ -10,5 +10,6 @@ class Account(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     cash = Column(Integer, nullable=False)
 
-    user = relationship('User', back_populates='accounts')
+    user = relationship('DBUser', back_populates='accounts')
+
 

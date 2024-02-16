@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
-from typing import Annotated, Union
+from typing import Union
 
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import Depends, HTTPException, status
+from fastapi import Request
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from pydantic import BaseModel
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
@@ -32,3 +31,31 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+
+def get_token_from_cookies(request: Request):
+    # Извлечение токена из cookies
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Access token is missing")
+    return token
+
+
+async def get_current_user(token: str = Depends(get_token_from_cookies)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        # because token starts with Baerer
+        payload = jwt.decode(token[7:], SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        # В вашем случае, вы можете возвращать полную информацию о пользователе,
+        # если у вас есть соответствующая функция для ее получения.
+        # Например, get_user(username) -> User
+        return username  # Или объект пользователя
+    except JWTError:
+        raise credentials_exception
