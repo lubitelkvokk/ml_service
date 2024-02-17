@@ -50,12 +50,12 @@ async def get_current_user(token: str = Depends(get_token_from_cookies)):
     try:
         # because token starts with Baerer
         payload = jwt.decode(token[7:], SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        login: str = payload.get("sub")
+        if login is None:
             raise credentials_exception
         # В вашем случае, вы можете возвращать полную информацию о пользователе,
         # если у вас есть соответствующая функция для ее получения.
         # Например, get_user(username) -> User
-        return username  # Или объект пользователя
+        return login  # Или объект пользователя
     except JWTError:
         raise credentials_exception

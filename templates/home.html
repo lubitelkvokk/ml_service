@@ -2,12 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Home Page</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .user-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            padding: 12px 16px;
+            z-index: 1;
+        }
+        .user-icon:hover .dropdown-content {
+            display: block;
+        }
+        .model-button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .model-button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
 </head>
 <body>
-    HOME PAGE
+<div class="user-icon">
+    <img src="path/to/your/user_icon.png" alt="User Icon">
+    <div class="dropdown-content">
+        <p>Account Balance: $1000</p>
+        <a href="/login">Login</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+<h2>HOME PAGE</h2>
+<div class="model-buttons">
+    <button class="model-button" onclick="selectModel('Model 1')">Model 1</button>
+    <button class="model-button" onclick="selectModel('Model 2')">Model 2</button>
+    <button class="model-button" onclick="selectModel('Model 3')">Model 3</button>
+</div>
+
+<script>
+    function selectModel(modelName) {
+        // Здесь должен быть код для отправки запроса на сервер
+        console.log(`Model selected: ${modelName}`);
+    }
+</script>
 </body>
 </html>

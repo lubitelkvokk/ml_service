@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -10,21 +9,13 @@ from src.db.entities.UserEntity import DBUser
 from src.db.session import get_db
 from src.services.security_service import get_current_user
 
-=======
-from fastapi import APIRouter, Depends, Request
-from fastapi.templating import Jinja2Templates
-from src.services.security_service import get_current_user
->>>>>>> 52bd85574673e0e96ff3571853e768d31fe1ea71
 router = APIRouter(prefix="/home", tags=["home"])
 templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/")
 async def get_home_page(request: Request, current_user: str = Depends(get_current_user)):
-<<<<<<< HEAD
 
-=======
->>>>>>> 52bd85574673e0e96ff3571853e768d31fe1ea71
     return templates.TemplateResponse("home.html", {"request": request})
 
 
