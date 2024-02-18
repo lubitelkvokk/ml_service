@@ -1,23 +1,18 @@
-from src.repositories.UserRepository import user_repository
-from src.schemas.user import User
-from src.exceptions import UserNotFoundError
-from src.schemas.predictor import Predictior
-from src.repositories.ModelRepository import model_repository
+from sqlalchemy.orm import Session
+
+from src.db.schemas.users import UserCreate
+from src.db.repository.users_repository import add_new_user
+from src.services.account_service import account_service
+
+from starlette.concurrency import run_in_threadpool
 
 
 class UserService:
+    async def create_new_user(self, user: UserCreate, db: Session):
+        db_user = await run_in_threadpool(add_new_user, user, db)
+        initial_balance = 100
+        db_account = await run_in_threadpool(account_service.create_new_account_by_user, db_user, db)
+        await run_in_threadpool(account_service.change_balance, db_account.id, initial_balance, db)
 
-    async def check_balance(self, user: User) -> int:
-        user_info = await user_repository.get_by_id(id=user.id)
-        if user_info is None:
-            raise UserNotFoundError()
-        return user_info.balance
-
-    async def add_model(self, model: Predictior):
-        await model_repository.add(model.dict())
-
-    async def get_all_models(self):
-        models = await model_repository.list_all()
-        return models
 
 user_service = UserService()

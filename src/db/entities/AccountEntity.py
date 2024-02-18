@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from db_init import Base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func, ForeignKey
 
+
 class Account(Base):
     __tablename__ = 'accounts'
 
@@ -11,5 +12,5 @@ class Account(Base):
     cash = Column(Integer, nullable=False)
 
     user = relationship('DBUser', back_populates='accounts')
-
+    actions = relationship('DBAction', back_populates='account')
 

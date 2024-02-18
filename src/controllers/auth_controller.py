@@ -6,7 +6,8 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from src.db.repository.users import create_new_user, authenticate_user
+from src.services.user_service import user_service
+from src.db.repository.users_repository import authenticate_user
 from src.db.schemas.users import UserCreate
 from src.db.session import get_db
 from src.services.security_service import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
@@ -23,13 +24,13 @@ def register(request: Request):
 @router.post("/register/")
 async def register(request: Request, username: str = Form(...), login: str = Form(...), email: str = Form(...),
                    password: str = Form(...), db: Session = Depends(get_db)):
-    user = UserCreate(login=login, username=username, email=email,
-                      password=password)  # Используйте значение email из формы
+    user_data = UserCreate(login=login, username=username, email=email, password=password)
     try:
-        user = create_new_user(user=user, db=db)
-        return RedirectResponse("/home",
-                                status_code=302)  # Перенаправление на главную страницу после успешной регистрации
+        # Добавлено 'await' для ожидания выполнения асинхронной функции
+        await user_service.create_new_user(user=user_data, db=db)
+        return RedirectResponse("/home", status_code=302)
     except IntegrityError:
+        # Возвращаем страницу регистрации с сообщением об ошибке
         return templates.TemplateResponse("register.html", {"request": request, "error": "Duplicate username or email"})
 
 
@@ -54,4 +55,3 @@ async def login_user(request: Request, login: str = Form(...), password: str = F
     # Добавление токена в заголовки куки (или вы можете выбрать другой способ передачи токена)
     response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True)
     return response
-
