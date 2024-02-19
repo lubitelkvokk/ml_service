@@ -3,7 +3,7 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 
 # Загрузка модели
-model = joblib.load('dummy_model.pkl')  # Убедитесь, что модель была сохранена в файл 'model.pkl'
+model = joblib.load('dummy_model.pkl')
 
 # Подготовка данных
 data = {

@@ -18,8 +18,10 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/")
-async def get_home_page(request: Request, current_user: str = Depends(get_current_user)):
-    return templates.TemplateResponse("home.html", {"request": request})
+async def get_home_page(request: Request, login: str = Depends(get_current_user), db: Session = Depends(get_db)):
+    account = account_service.get_account_by_login(login, db)
+
+    return templates.TemplateResponse("home.html", {"request": request, "balance": account.cash})
 
 
 @router.post("/")
@@ -36,16 +38,20 @@ async def predict(request: Request, db: Session = Depends(get_db), login: DBUser
         raise HTTPException(status_code=400, detail="Not enough funds")
 
     # Списание средств и запись действия
-    account_service.change_balance(account.id, -model.cost, db)
-    action_repository.create_action(account.id, -model.cost, db)
+    account_service.change_balance(account.id, model.cost, db)
+    action_repository.create_action(account.id, model.cost, db)
 
     # Загрузка модели и предсказание
     if (model_id == 1):
         loaded_model = joblib.load("dummy_model.pkl")
-
+    elif (model_id == 2):
+        loaded_model = joblib.load("rf_model.pkl")
     # Предположим, что модели сохранены с именем <id>_model.pkl
     data = pd.DataFrame([[age_group, RIDAGEYR, RIAGENDR, PAQ605, BMXBMI, LBXGLU, LBXGLT, LBXIN]],
                         columns=['age_group', 'RIDAGEYR', 'RIAGENDR', 'PAQ605', 'BMXBMI', 'LBXGLU', 'LBXGLT', 'LBXIN'])
     prediction = loaded_model.predict(data)[0]
 
-    return templates.TemplateResponse("home.html", {"request": request, "prediction": prediction})
+    return templates.TemplateResponse("home.html",
+                                      {"request": request,
+                                       "prediction": prediction,
+                                       "balance": account.cash})
