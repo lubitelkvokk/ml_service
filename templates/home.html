@@ -1,72 +1,58 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Home Page</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        .user-icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            background-color: #f9f9f9;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            padding: 12px 16px;
-            z-index: 1;
-        }
-        .user-icon:hover .dropdown-content {
-            display: block;
-        }
-        .model-button {
-            padding: 10px 20px;
-            margin: 10px;
-            cursor: pointer;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .model-button:hover {
-            background-color: #d32f2f;
-        }
-    </style>
 </head>
 <body>
-<div class="user-icon">
-    <div class="dropdown-content">
-        <p>Account Balance: $1000</p>
-        <a href="/login">Login</a>
-        <a href="/logout">Logout</a>
+<h1>Welcome to the Diabetes Prediction Page</h1>
+<form action="/home/predict" method="post">
+    <div>
+        <label for="age_group">Age Group:</label>
+        <select id="age_group" name="age_group">
+            <option value="1">Adult</option>
+            <option value="2">Senior</option>
+        </select>
     </div>
-</div>
-<h2>HOME PAGE</h2>
-<div class="model-buttons">
-    <button class="model-button" onclick="selectModel('Model 1')">Model 1</button>
-    <button class="model-button" onclick="selectModel('Model 2')">Model 2</button>
-    <button class="model-button" onclick="selectModel('Model 3')">Model 3</button>
-</div>
-
-<script>
-    function selectModel(modelName) {
-        // Здесь должен быть код для отправки запроса на сервер
-        console.log(`Model selected: ${modelName}`);
-    }
-</script>
+    <div>
+        <label for="RIDAGEYR">Actual Age:</label>
+        <input type="number" id="RIDAGEYR" name="RIDAGEYR" min="0" max="120">
+    </div>
+    <div>
+        <label for="RIAGENDR">Gender:</label>
+        <select id="RIAGENDR" name="RIAGENDR">
+            <option value="1">Male</option>
+            <option value="2">Female</option>
+        </select>
+    </div>
+    <div>
+        <label for="PAQ605">Physical Activity:</label>
+        <select id="PAQ605" name="PAQ605">
+            <option value="1">Yes</option>
+            <option value="2">No</option>
+        </select>
+    </div>
+    <div>
+        <label for="BMXBMI">BMI:</label>
+        <input type="number" id="BMXBMI" name="BMXBMI" step="any" min="0">
+    </div>
+    <div>
+        <label for="LBXGLU">Glucose Level:</label>
+        <input type="number" id="LBXGLU" name="LBXGLU" step="any" min="0">
+    </div>
+    <div>
+        <label for="LBXGLT">Glucose Tolerance Test:</label>
+        <input type="number" id="LBXGLT" name="LBXGLT" step="any" min="0">
+    </div>
+    <div>
+        <label for="LBXIN">Insulin Level:</label>
+        <input type="number" id="LBXIN" name="LBXIN" step="any" min="0">
+    </div>
+    <div>
+        <input type="submit" value="Predict Diabetes">
+    </div>
+</form>
+{% if prediction %}
+<h2>Prediction: {{ prediction }}</h2>
+{% endif %}
 </body>
 </html>

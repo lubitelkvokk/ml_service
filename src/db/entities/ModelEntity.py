@@ -6,7 +6,6 @@ class DBModel(Base):
     __tablename__ = 'models'
     # table_args = {'extend_existing': True}
 
-    model_id = Column(Integer, primary_key=True, autoincrement=True)
-    modelname = Column(String(255), nullable=False)
-    description = Column(String(255), nullable=True)
-    price = Column(Integer, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    model_name = Column(String(255), nullable=False)
+    cost = Column(Integer, nullable=False)

@@ -13,10 +13,9 @@ class AccountService:
     def get_balance(self, account_id: int, db: Session) -> int:
         return get_account_balance(account_id, db)
 
-    def change_balance(self, account_id: int, change: int, db: Session):
-        update_account_balance(account_id, change, db)
-        action_type = "Deposit" if change > 0 else "Withdrawal"
-        create_action(account_id, action_type, change, db)
+    def change_balance(self, account_id: int, currency_spent: int, db: Session):
+        update_account_balance(account_id, currency_spent, db)
+        create_action(account_id, currency_spent, db)
 
 
 account_service = AccountService()
