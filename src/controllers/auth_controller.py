@@ -48,7 +48,7 @@ async def login_user(request: Request, login: str = Form(...), password: str = F
     # Создание токена доступа для пользователя
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={"sub": user.login}, expires_delta=access_token_expires
     )
     # Создание ответа с перенаправлением
     response = RedirectResponse("/home", status_code=302)

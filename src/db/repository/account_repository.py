@@ -40,3 +40,23 @@ def update_account_balance(account_id: int, currency_spent: int, db: Session) ->
         return account
     else:
         raise Exception("Account not found")
+
+
+def get_account_by_user_id(user_id: int, db: Session) -> Account:
+    account = db.query(Account).filter(Account.user_id == user_id).first()
+    if not account:
+        raise Exception("Account not found")
+    return account
+
+def get_account_by_login(login: str, db: Session):
+    # Поиск пользователя по логину
+    user = db.query(DBUser).filter(DBUser.login == login).first()
+    if not user:
+        raise Exception("User not found")
+
+    # Получение аккаунта пользователя
+    account = db.query(Account).filter(Account.user_id == user.id).first()
+    if not account:
+        raise Exception("Account not found")
+
+    return account

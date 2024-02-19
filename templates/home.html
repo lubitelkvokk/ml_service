@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home Page</title>
+    <title>Diabetes Prediction</title>
 </head>
 <body>
-<h1>Welcome to the Diabetes Prediction Page</h1>
-<form action="/home/predict" method="post">
+
+<form action="/home" method="post">
+    <div>
+        <label for="model_id">Select Model:</label>
+        <select id="model_id" name="model_id">
+            <option value="1">Model 1</option>
+            <option value="2">Model 2</option>
+        </select>
+    </div>
     <div>
         <label for="age_group">Age Group:</label>
         <select id="age_group" name="age_group">

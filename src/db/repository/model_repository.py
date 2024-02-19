@@ -1,13 +1,13 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from src.db.session import get_db
+from db_init import db
 
-from src.db.entities import ModelEntity  # Убедитесь, что импорт указывает на правильный путь
+from src.db.entities.ModelEntity import DBModel  # Убедитесь, что импорт указывает на правильный путь
 
 
 def create_new_model(model_name: str, cost: int, db: Session):
-    db_model = ModelEntity(
+    db_model = DBModel(
         model_name=model_name,
         cost=cost
     )
@@ -21,7 +21,3 @@ def create_new_model(model_name: str, cost: int, db: Session):
         raise e
 
 
-# Предполагаем, что db - это сессия SQLAlchemy, которую вы получили где-то в вашем приложении
-# Пример вызова функции с созданием новой модели
-
-create_new_model(model_name="dummy", cost=15, db=get_db())
