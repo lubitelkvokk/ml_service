@@ -28,7 +28,7 @@ async def register(request: Request, username: str = Form(...), login: str = For
     try:
         # Добавлено 'await' для ожидания выполнения асинхронной функции
         await user_service.create_new_user(user=user_data, db=db)
-        return RedirectResponse("/home", status_code=302)
+        return RedirectResponse("/authentication/login", status_code=302)
     except IntegrityError:
         # Возвращаем страницу регистрации с сообщением об ошибке
         return templates.TemplateResponse("register.html", {"request": request, "error": "Duplicate username or email"})

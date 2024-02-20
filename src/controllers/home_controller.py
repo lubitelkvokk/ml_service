@@ -38,15 +38,22 @@ async def predict(request: Request, db: Session = Depends(get_db), login: DBUser
     account = account_service.get_account_by_login(login, db)
 
     if account.cash < model.cost:
-        raise HTTPException(status_code=400, detail="Not enough funds")
+        return templates.TemplateResponse("home.html",
+                                          {"request": request,
+                                           # "prediction": prediction_result,
+                                           "balance": "Not enough money"})
+        # raise HTTPException(status_code=400, detail="Not enough funds")
     account_service.change_balance(account.id, model.cost, db)
 
     # Создание записи действия
     action = action_repository.create_action(account_id=account.id, currency_spent=model.cost, db=db)
     if model_id == 1:
         loaded_model = joblib.load("dummy_model.pkl")
-    else:
-        loaded_model = joblib.load("dummy_model.pkl")
+    elif model_id == 2:
+        # loaded_model = joblib.load("svc_model.pkl")
+        loaded_model = joblib.load("rf_model.pkl")
+    # else model_id == 3:
+    #
     # Предсказание и сохранение результата
       # Предположим, что модели сохранены с именем <id>_model.pkl
     data = pd.DataFrame([[age_group, RIDAGEYR, RIAGENDR, PAQ605, BMXBMI, LBXGLU, LBXGLT, LBXIN]],
