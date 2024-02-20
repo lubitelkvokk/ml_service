@@ -38,3 +38,7 @@ def authenticate_user(login: str, password: str, db: Session):
     if not pwd_context.verify(password, user.password_hash):
         return False
     return user
+
+def get_user_by_login(login: str, db: Session):
+    user = db.query(DBUser).filter(DBUser.login == login).first()
+    return user

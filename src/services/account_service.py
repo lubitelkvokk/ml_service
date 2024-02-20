@@ -20,8 +20,8 @@ class AccountService:
     def get_account_by_user_id(self, user_id: int, db: Session) -> Account:
         return get_account_by_user_id(user_id, db)
 
-    def get_account_by_login(self, user_id: int, db: Session) -> Account:
-        return get_account_by_login(user_id, db)
+    def get_account_by_login(self, login: str, db: Session) -> Account:
+        return get_account_by_login(login, db)
 
 
 account_service = AccountService()

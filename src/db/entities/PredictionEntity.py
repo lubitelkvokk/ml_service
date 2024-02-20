@@ -1,19 +1,29 @@
+from datetime import datetime
+
+from sqlalchemy.orm import relationship
+
 from db_init import Base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func, ForeignKey, Float
 
 
 class DBPrediction(Base):
-    __tablename__ = "prediction"
-    # table_args = {'extend_existing': True}
+    __tablename__ = 'predictions'
 
-    prediction_id = Column(Integer, primary_key=True, autoincrement=True)
-    action_id = Column(Integer, ForeignKey("actions.action_id"))
-    model_id = Column(Integer, ForeignKey("models.model_id"))
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    action_id = Column(Integer, ForeignKey("actions.id"))
+    user_id = Column(Integer, ForeignKey('users.id'))
+    model_id = Column(Integer, ForeignKey('models.id'))
+    created_at = Column(DateTime, default=datetime.utcnow)
+
     gender = Column(Boolean, nullable=False, default=True)
-    labour_activity = Column(Boolean, nullable=False, default=True)
-    bmi = Column(Float, nullable=False)
-    diagnose_diabetes = Column(Integer, nullable=False, default=3)
+    body_mass_index = Column(Float, nullable=False)
+    physical_activity = Column(Boolean, nullable=False, default=True)
+    insulin_level = Column(Float, nullable=False)
+    diabetes = Column(Integer, nullable=True)
     glucose_level = Column(Float, nullable=False)
-    glucose_level2 = Column(Float, nullable=False)
-    insulin = Column(Float, nullable=False)
-    answer = Column(String(255), nullable=False)
+    glucose_tolerance_test = Column(Float, nullable=False)
+    prediction_result = Column(String(255), nullable=False)
+
+    # action = relationship('DBAction', back_populates='predictions')
+    # user = relationship('DBUser', back_populates='predictions')
+    # model = relationship('DBModel', back_populates='predictions')
