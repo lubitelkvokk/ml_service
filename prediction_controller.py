@@ -3,8 +3,8 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 
 # Загрузка модели
-model = joblib.load('dummy_model.pkl')
-
+model = joblib.load('svc_model.pkl')
+# print(type(model))
 # Подготовка данных
 data = {
     'age_group': [1, 1, 1, 2],
@@ -23,3 +23,15 @@ predictions = model.predict(df)
 
 # Вывести результат
 print(predictions)
+
+# from sklearn.ensemble import RandomForestClassifier
+# import joblib
+#
+# # Предположим, что у вас есть файл модели 'rf_model.pkl'
+# loaded_model = joblib.load('rf_model.pkl')
+#
+# # Убедитесь, что loaded_model действительно является моделью
+# if isinstance(loaded_model, RandomForestClassifier):
+#     prediction = loaded_model.predict(data)[0]
+# else:
+#     raise TypeError("Загруженный объект не является моделью RandomForestClassifier")

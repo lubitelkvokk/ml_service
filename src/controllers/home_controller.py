@@ -52,14 +52,14 @@ async def predict(request: Request, db: Session = Depends(get_db), login: DBUser
     elif model_id == 2:
         # loaded_model = joblib.load("svc_model.pkl")
         loaded_model = joblib.load("rf_model.pkl")
-    # else model_id == 3:
-    #
+    else:
+        loaded_model = joblib.load("svc_model.pkl")
+
     # Предсказание и сохранение результата
-      # Предположим, что модели сохранены с именем <id>_model.pkl
+    # Предположим, что модели сохранены с именем <id>_model.pkl
     data = pd.DataFrame([[age_group, RIDAGEYR, RIAGENDR, PAQ605, BMXBMI, LBXGLU, LBXGLT, LBXIN]],
                         columns=['age_group', 'RIDAGEYR', 'RIAGENDR', 'PAQ605', 'BMXBMI', 'LBXGLU', 'LBXGLT', 'LBXIN'])
     prediction = loaded_model.predict(data)[0]
-    print(prediction)
     prediction_result = "Positive" if prediction == 1 else "Negative"
     create_prediction(
         db=db,
