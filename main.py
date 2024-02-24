@@ -19,9 +19,3 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 async def unicorn_exception_handler(request: Request, exc: HTTPException):
     if (exc.status_code == status.HTTP_401_UNAUTHORIZED):
         return RedirectResponse("/authentication/login", status_code=302)
-# from db_init import db
-# from src.db.repository.model_repository import create_new_model
-#
-# create_new_model('dummy', 15, db)
-# create_new_model('rfmodel', 15, db)
-# create_new_model('svcmodel', 15, db)
