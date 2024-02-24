@@ -15,12 +15,6 @@ app.include_router(home_router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-@app.get("/")
-def read_root():
-    html_content = "<h2>Hello METANIT.COM!</h2>"
-    return HTMLResponse(content=html_content)
-
-
 @app.exception_handler(HTTPException)
 async def unicorn_exception_handler(request: Request, exc: HTTPException):
     if (exc.status_code == status.HTTP_401_UNAUTHORIZED):
@@ -28,4 +22,6 @@ async def unicorn_exception_handler(request: Request, exc: HTTPException):
 # from db_init import db
 # from src.db.repository.model_repository import create_new_model
 #
+# create_new_model('dummy', 15, db)
 # create_new_model('rfmodel', 15, db)
+# create_new_model('svcmodel', 15, db)

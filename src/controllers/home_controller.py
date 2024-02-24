@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import joblib
 import pandas as pd
 from fastapi import APIRouter, Depends, Request, HTTPException, Form
@@ -7,7 +5,6 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from src.db.entities.ModelEntity import DBModel
-from src.db.entities.UserEntity import DBUser
 from src.db.repository import action_repository
 from src.db.repository.prediction_repository import create_prediction
 from src.db.repository.users_repository import get_user_by_login
@@ -26,7 +23,7 @@ async def get_home_page(request: Request, login: str = Depends(get_current_user)
 
 
 @router.post("/")
-async def predict(request: Request, db: Session = Depends(get_db), login: DBUser = Depends(get_current_user),
+async def predict(request: Request, db: Session = Depends(get_db), login: str = Depends(get_current_user),
                   model_id: int = Form(...), age_group: int = Form(...), RIDAGEYR: float = Form(...),
                   RIAGENDR: int = Form(...), PAQ605: int = Form(...), BMXBMI: float = Form(...),
                   LBXGLU: float = Form(...), LBXGLT: float = Form(...), LBXIN: float = Form(...)):

@@ -1,8 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from db_init import db
-
 from src.db.entities.ModelEntity import DBModel  # Убедитесь, что импорт указывает на правильный путь
 
 

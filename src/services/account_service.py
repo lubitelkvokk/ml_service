@@ -1,9 +1,9 @@
+from sqlalchemy.orm import Session
+
 from src.db.entities.AccountEntity import Account
 from src.db.entities.UserEntity import DBUser
 from src.db.repository.account_repository import create_new_account, get_account_by_user_id, get_account_by_login
-from sqlalchemy.orm import Session
 from src.db.repository.account_repository import get_account_balance, update_account_balance
-from src.db.repository.action_repository import create_action
 
 
 class AccountService:
@@ -15,7 +15,6 @@ class AccountService:
 
     def change_balance(self, account_id: int, currency_spent: int, db: Session):
         update_account_balance(account_id, currency_spent, db)
-        create_action(account_id, currency_spent, db)
 
     def get_account_by_user_id(self, user_id: int, db: Session) -> Account:
         return get_account_by_user_id(user_id, db)

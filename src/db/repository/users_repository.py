@@ -1,7 +1,7 @@
-# db/repository/users_repository.py
+
 from sqlalchemy.orm import Session
 from src.db.entities.UserEntity import \
-    DBUser  # Предполагается, что вы определили модель пользователя DBUser в db/models/user_model.py
+    DBUser
 from src.db.schemas.users import UserCreate
 from sqlalchemy.exc import IntegrityError
 from passlib.context import CryptContext
@@ -19,7 +19,6 @@ def add_new_user(user: UserCreate, db: Session):
         username=user.username,
         email=user.email,
         password_hash=get_password_hash(user.password)
-        # Убедитесь, что у вас есть поле для хэшированного пароля в модели DBUser
     )
     try:
         db.add(db_user)

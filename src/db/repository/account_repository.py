@@ -1,10 +1,8 @@
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from src.db.entities.AccountEntity import Account
 from src.db.entities.UserEntity import DBUser
-from src.db.schemas.users import UserCreate
-from sqlalchemy.exc import IntegrityError
-from passlib.context import CryptContext
 
 
 def create_new_account(user_id: int, db: Session):
