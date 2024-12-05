@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from EDA.ip import rf_model
+from EDA.ipynb import rf_model
 
 # Загрузка данных для предсказания
 data_to_predict = pd.read_csv('to_predict.csv')
